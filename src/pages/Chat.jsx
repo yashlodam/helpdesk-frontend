@@ -112,8 +112,30 @@ const CONVERSATION = [
       </div>
 
       <section>
+        
+        {/*header*/}
+       <div className='flex items-center gap-3 px-4 py-3 border-b'>
 
-       
+        <Avatar>
+            <AvatarImage src=""/>
+            <AvatarFallback className={'text-xs'}></AvatarFallback>
+        </Avatar>
+        <div className='leading-tight'>
+            <div className='text-sm font-medium'>
+                Liza Support
+            </div>
+            <div className='text-xs text-muted-foreground'>
+                Online. Typing...
+            </div>
+        </div>
+
+        <div>
+            <Button variant={"ghost"} size={'icon'} className={'h-8 w-8'}
+            ><Search className={'h-4 w-3'}/></Button>
+            <Button><MoreVertical/></Button>
+        </div>
+
+       </div>
 
       </section>
       
