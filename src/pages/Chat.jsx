@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Search ,MoreVertical, Send, Plus } from 'lucide-react'
 import {Button} from "../components/ui/button"
 import { Input } from "../components/ui/input"
@@ -7,9 +7,7 @@ import { Separator } from '../components/ui/separator'
 import { Avatar,AvatarFallback,AvatarImage } from '../components/ui/avatar'
 import MessageBubble from '../components/MessageBubble'
 
-function Chat() {
-
-  const CHATS = [
+ const CHATS = [
   {
     id: 1,
     name: "Spring Boot REST API",
@@ -76,6 +74,7 @@ function Chat() {
 
 ];
 
+
 const CONVERSATION = [
     {
         id:1,
@@ -88,73 +87,208 @@ const CONVERSATION = [
         author:"user",
         text:"Can you help me with the database migration?",
         at:"10:01 AM",
-    }
+    },
+    {
+        id:3,
+        author:"bot",
+        text:"Can you help me with the database migration?",
+        at:"10:03 AM",
+    },
+    
+    
+
 ]
 
+
+function Chat() {
+
+ const[messages,setMessages] = useState(CONVERSATION)
+ const [draft,setDraft] = useState("")
+ const endRef = useRef(null);
+ const [sending,setSending] = useState(false);
+
+ useEffect(()=>{
+  endRef.current?.scrollIntoView({behavior:"smooth"})
+ },[messages])
+
+ function sendMessages(){
+
+  const textMessage = draft.trim();
+
+  if(!textMessage) return;
+
+  
+  //call api's to send message
+
+  setMessages([...messages,{
+   id:4,
+        author:"bot",
+        text:"Can you help me with the database migration?",
+        at:"10:03 AM",
+  }]);
+  
+ }
+
   return (
-    <div className='mx-auto min-h-screen max-w-7xl grid grid-cols-1 md:grid-cols-[300px_minmax(0,1fr)] border-x'>
+    <div className='fixed top-0 left-0 right-0 mx-auto min-h-screen max-w-7xl grid grid-cols-1 md:grid-cols-[300px_minmax(0,1fr)] border-x'>
 
       <div>
         {/*Sidebar*/}
         
-        <aside className='hidden md:flex md:flex-col border-r'>
+       <aside className="hidden md:flex flex-col border-r h-full">
 
-           <div className='p-3 flex items-center gap-2'>
-            <Button size={'icon'} variant={'outline'} className={"h-8 w-8"}>
-                <Plus className='h-4 w-4' />
-            </Button>
-            <div className='relative w-full'>
-                <input placeholder='Search Chats..' className='h-9 w-full pl-8 border rounded' type="text" />
-                <Search className='h-4 w-4 pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground'/>
+  <div className="p-3 flex items-center gap-2">
+    <Button size="icon" variant="outline">
+      <Plus className="h-4 w-4" />
+    </Button>
+
+    <div className="relative flex-1">
+      <Input
+        placeholder="Search chats..."
+        className="pl-8"
+      />
+      <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+    </div>
+  </div>
+
+  <Separator />
+
+  <ScrollArea className="flex-1 h-[calc(100vh-400px)]">
+
+    <div className="p-2 space-y-2">
+
+      {CHATS.map(chat => (
+
+        <button
+          key={chat.id}
+          className="w-full flex items-center gap-3 rounded-xl p-3 hover:bg-muted transition"
+        >
+
+          <Avatar>
+            <AvatarFallback>
+              {chat.initials}
+            </AvatarFallback>
+          </Avatar>
+
+          <div className="flex-1 text-left">
+
+            <div className="font-medium text-sm">
+              {chat.name}
             </div>
-           </div>
-           <Separator/>
-        </aside>
+
+            <div className="text-xs text-muted-foreground truncate">
+              {chat.lastMessage}
+            </div>
+
+          </div>
+
+          {chat.unread > 0 && (
+
+            <span className="bg-primary text-primary-foreground text-xs rounded-full px-2 py-1">
+              {chat.unread}
+            </span>
+
+          )}
+
+        </button>
+
+      ))}
+
+    </div>
+
+  </ScrollArea>
+
+</aside>
 
       </div>
 
-      <section className='h-full'>
+      <section className="flex flex-col h-screen">
         
         {/*header*/}
-       <div className='flex justify-between items-center gap-3 px-4 py-3 border-b'>
-        <div className='flex gap-4'>
+     <div className="flex items-center justify-between px-5 py-4 border-b bg-background">
+
+    <div className="flex items-center gap-3">
+
         <Avatar>
-            <AvatarImage src=""/>
-            <AvatarFallback className={'text-xs'}>AB</AvatarFallback>
+            <AvatarFallback>AI</AvatarFallback>
         </Avatar>
-        <div className='leading-tight'>
-            <div className='text-sm font-medium'>
-                Liza Support
-            </div>
-            <div className='text-xs text-muted-foreground'>
-                Online. Typing...
-            </div>
-        </div>
-        </div>
+
         <div>
-            <Button variant={"ghost"} size={'icon'} className={'h-8 w-8'}
-            ><Search className={'h-4 w-3'}/></Button>
-            <Button variant={"ghost"} size={'icon'} className={'h-8 w-8'}><MoreVertical className={'h-4 w-3'}/></Button>
+
+            <h2 className="font-semibold">
+                AI Assistant
+            </h2>
+
+            <p className="text-xs text-green-500">
+                ● Online
+            </p>
+
         </div>
 
-       </div>
+    </div>
+
+    <div className="flex gap-1">
+
+        <Button variant="ghost" size="icon">
+            <Search className="h-4 w-4"/>
+        </Button>
+
+        <Button variant="ghost" size="icon">
+            <MoreVertical className="h-4 w-4"/>
+        </Button>
+
+    </div>
+
+</div>
 
        {/*chat Area */}
-       <ScrollArea className={'flex-1'}>
+       <ScrollArea  className="flex-1 bg-muted/20 h-[calc(100vh-150px)]">
 
-        <div className='mx-auto max-w-3xl px-6 py-6 space-y-6'>
+        <div  className='mx-auto max-w-3xl px-6 py-6 space-y-6'>
 
         {
-          CONVERSATION.map((chat,index)=>(
+          messages.map((chat,index)=>(
             <MessageBubble key={chat.id} author={chat.author} at={chat.at}>
               {chat.text}
             </MessageBubble>
           ))
         }
+         
   
         </div>
+        <div ref={endRef}></div>
 
        </ScrollArea>
+
+       {/* composer */}
+      <div className="border-t bg-background p-4">
+
+    <div className="max-w-3xl mx-auto flex items-center gap-3">
+
+        <Input
+    value={draft}
+    onChange={(e) => setDraft(e.target.value)}
+    placeholder="Message AI..."
+    className="rounded-full h-11"
+    onKeyDown={(e) => {
+        if (e.key === "Enter") {
+            sendMessages();
+        }
+    }}
+/>
+
+        <Button
+  onClick={sendMessages}
+  disabled={sending || !draft.trim()}
+  size="icon"
+  className="rounded-full h-11 w-11 cursor-pointer"
+>
+  <Send className="h-5 w-5" />
+</Button>
+
+    </div>
+
+</div>
 
       </section>
       
