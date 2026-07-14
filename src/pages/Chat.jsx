@@ -5,6 +5,7 @@ import { Input } from "../components/ui/input"
 import { ScrollArea } from '../components/ui/scroll-area'
 import { Separator } from '../components/ui/separator'
 import { Avatar,AvatarFallback,AvatarImage } from '../components/ui/avatar'
+import MessageBubble from '../components/MessageBubble'
 
 function Chat() {
 
@@ -107,18 +108,19 @@ const CONVERSATION = [
                 <Search className='h-4 w-4 pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground'/>
             </div>
            </div>
+           <Separator/>
         </aside>
 
       </div>
 
-      <section>
+      <section className='h-full'>
         
         {/*header*/}
-       <div className='flex items-center gap-3 px-4 py-3 border-b'>
-
+       <div className='flex justify-between items-center gap-3 px-4 py-3 border-b'>
+        <div className='flex gap-4'>
         <Avatar>
             <AvatarImage src=""/>
-            <AvatarFallback className={'text-xs'}></AvatarFallback>
+            <AvatarFallback className={'text-xs'}>AB</AvatarFallback>
         </Avatar>
         <div className='leading-tight'>
             <div className='text-sm font-medium'>
@@ -128,14 +130,31 @@ const CONVERSATION = [
                 Online. Typing...
             </div>
         </div>
-
+        </div>
         <div>
             <Button variant={"ghost"} size={'icon'} className={'h-8 w-8'}
             ><Search className={'h-4 w-3'}/></Button>
-            <Button><MoreVertical/></Button>
+            <Button variant={"ghost"} size={'icon'} className={'h-8 w-8'}><MoreVertical className={'h-4 w-3'}/></Button>
         </div>
 
        </div>
+
+       {/*chat Area */}
+       <ScrollArea className={'flex-1'}>
+
+        <div className='mx-auto max-w-3xl px-6 py-6 space-y-6'>
+
+        {
+          CONVERSATION.map((chat,index)=>(
+            <MessageBubble key={chat.id} author={chat.author} at={chat.at}>
+              {chat.text}
+            </MessageBubble>
+          ))
+        }
+  
+        </div>
+
+       </ScrollArea>
 
       </section>
       
